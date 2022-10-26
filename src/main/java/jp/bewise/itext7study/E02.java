@@ -29,7 +29,10 @@ public class E02 {
 
     static PdfFont mainfont = null;
 
-    public static void main(String[] args) throws Exception {
+	private static final String gyoumatsuKinsoku = "([｛〔〈《「『【〘〖〝‘“｟«—…‥〳〴〵";
+	private static final String gyoutouKinsoku = ",)]｝、〕〉》」』】〙〗〟’”｠»ゝゞーァィゥェォッャュョヮヵヶぁぃぅぇぉっゃゅょゎゕゖㇰㇱㇲㇳㇴㇵㇶㇷㇸㇹㇷ゚ㇺㇻㇼㇽㇾㇿ々〻‐゠–〜～?!‼⁇⁈⁉・:;/。.";
+
+	public static void main(String[] args) throws Exception {
         mainfont = PdfFontFactory.createFont(NOTOCJK, PdfEncodings.IDENTITY_H);
         File file = new File(DEST);
         file.getParentFile().mkdirs();
@@ -57,35 +60,26 @@ public class E02 {
         document.setRenderer(new ColumnDocumentRenderer(document, columns));
 
         String article = new String(Files.readAllBytes(Paths.get(SOURCE_TXT)), StandardCharsets.UTF_8);
-        addArticle(document, article);
+    	Text text = new Text(article);
+    	text.setSplitCharacters(
+    			(glyphLine, glyphPos)->{
+    				if (gyoumatsuKinsoku.indexOf(glyphLine.get(glyphPos).getUnicode()) >= 0)
+    					return false;
+    				if (glyphPos < glyphLine.size() - 1) {
+    					if (gyoutouKinsoku.indexOf(glyphLine.get(glyphPos + 1).getUnicode()) >= 0) {
+    						return false;
+    					}
+    				}
+    				return true;
+    			});
+        Paragraph p = new Paragraph("")
+                .setFont(mainfont)
+                .setFontSize(10)
+                .add(text);
+        document.add(p);
 
         document.close();
 
     }
 
-    public void addArticle(Document doc, String text) throws IOException {
-    	Text txt = new Text(text);
-    	txt.setSplitCharacters(new Kinsoku());
-        Paragraph p = new Paragraph("")
-                .setFont(mainfont)
-                .setFontSize(10)
-                .add(txt);
-        doc.add(p);
-    }
-    
-    private class Kinsoku implements ISplitCharacters {
-    	private static final String gyoumatsuKinsoku = "([｛〔〈《「『【〘〖〝‘“｟«—…‥〳〴〵";
-    	private static final String gyoutouKinsoku = ",)]｝、〕〉》」』】〙〗〟’”｠»ゝゞーァィゥェォッャュョヮヵヶぁぃぅぇぉっゃゅょゎゕゖㇰㇱㇲㇳㇴㇵㇶㇷㇸㇹㇷ゚ㇺㇻㇼㇽㇾㇿ々〻‐゠–〜～?!‼⁇⁈⁉・:;/。.";
-		public boolean isSplitCharacter(GlyphLine text, int glyphPos) {
-			if (gyoumatsuKinsoku.indexOf(text.get(glyphPos).getUnicode()) >= 0)
-				return false;
-			if (glyphPos < text.size() - 1) {
-				if (gyoutouKinsoku.indexOf(text.get(glyphPos + 1).getUnicode()) >= 0) {
-					return false;
-				}
-			}
-			return true;
-		}
-    	
-    }
 }

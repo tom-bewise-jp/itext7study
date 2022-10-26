@@ -1,7 +1,6 @@
 package jp.bewise.itext7study;
 
 import com.itextpdf.io.font.PdfEncodings;
-import com.itextpdf.io.font.otf.GlyphLine;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
@@ -10,7 +9,6 @@ import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.layout.ColumnDocumentRenderer;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.*;
-import com.itextpdf.layout.splitting.ISplitCharacters;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

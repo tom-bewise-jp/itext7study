@@ -54,17 +54,13 @@ public class E01 {
         document.setRenderer(new ColumnDocumentRenderer(document, columns));
 
         String article = new String(Files.readAllBytes(Paths.get(SOURCE_TXT)), StandardCharsets.UTF_8);
-        addArticle(document, article);
-
-        document.close();
-
-    }
-
-    public void addArticle(Document doc, String text) throws IOException {
         Paragraph p = new Paragraph("")
                 .setFont(mainfont)
                 .setFontSize(10)
-                .add(text);
-        doc.add(p);
+                .add(article);
+        document.add(p);
+
+        document.close();
+
     }
 }
